@@ -48,9 +48,13 @@
         <input type = "number" id = "quantity" placeholder = "Enter quantity" name = "quantity" required>
         <br><br>
 
-        <label for = "extensionCord">🔌 Extension Cord:</label>
-        <input type = "number" id = "extensionCord" placeholder = "Enter amount of extension cords" name = "extensionCord">
-        <br><br>
+        <label>
+            <input type="checkbox" id="hasCord"> Include Extension Cord (₱150 each)
+        </label>
+
+        <input type="number" id="cordQty" placeholder="Number of Cords" value="0" min="0">
+
+        <br>
 
         <label for = "delivery">🚚 Delivery Fee:</label>
         <input type="number" id="delivery" placeholder="Delivery Fee" required>
@@ -62,12 +66,35 @@
                 id="vat">
             🧾If Official Receipt is Required (Add 8% VAT)🧾
         </label>
+        <br><br> 
 
+        <button type="button" onclick="showPreview()"> 🔍 Preview Quotation 🔍</button>
         <button type="button" onclick="generatePDF()">💾 Save &Generate Quotation PDF 💾</button>
-
 
     </form>
 
-    <h2>💰 Cost Breakdown</h2>
+    <div class="preview">
+        <h2>👤 Customer Details 👤</h2>
+        <p id="p_customer"></p>
+        <p id="p_contact"></p>
+        <p id="p_address"></p>
+
+        <hr>
+        <h2>💰 Cost Breakdown 💰</h2>
+        <p id="p_fans"></p>
+        <p id="p_price"></p>
+        <p id="p_rental"></p>
+        <p id="p_delivery"></p>
+        <p id="p_cord"></p>
+        <p id="p_subtotal"></p>
+        <p id="p_vat"></p>
+
+        <h3 id="p_total"></h3>
+
+        <button id="confirmBtn">✅ Confirm & Save + Generate PDF</button>
+        <button onclick="hidePreview()">✏️ Edit</button>
+
+
+    </div>
 </body>
 </html>
