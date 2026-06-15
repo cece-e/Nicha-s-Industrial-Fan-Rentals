@@ -36,11 +36,11 @@
         <br><br>
 
         <h2>📋 Rental Details</h2>
-        <label for = "⏰ Ingress">📍 Ingress Time::</label>
+        <label for = "Ingress">⏰ Ingress Time::</label>
         <input type="time" id="time_in">
         <br><br>
 
-        <label for = "⏰ Egress">📍 Egress Time::</label>
+        <label for = "Egress">⏰ Egress Time::</label>
         <input type="time" id="time_out">
         <br><br>
 
@@ -49,12 +49,10 @@
         <br><br>
 
         <label>
-            <input type="checkbox" id="hasCord"> Include Extension Cord (₱150 each)
+            <input type="checkbox" id="hasCord"> 🔌 Include Extension Cord (₱150 each)
         </label>
-
         <input type="number" id="cordQty" placeholder="Number of Cords" value="0" min="0">
-
-        <br>
+        <br><br>
 
         <label for = "delivery">🚚 Delivery Fee:</label>
         <input type="number" id="delivery" placeholder="Delivery Fee" required>
@@ -68,7 +66,7 @@
         </label>
         <br><br> 
 
-        <button type="button" onclick="showPreview()"> 🔍 Preview Quotation 🔍</button>
+        <button type="button" onclick="showPreview()"> 🔍 Preview Quotation 🔍</button><br>
         <button type="button" onclick="generatePDF()">💾 Save &Generate Quotation PDF 💾</button>
 
     </form>
