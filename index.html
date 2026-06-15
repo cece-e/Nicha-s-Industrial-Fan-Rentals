@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nicha's Industrial Fan Rentals</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>
+            🌀 Nicha's Industrial Fan Rentals 🌀
+        </h1>
+
+        <p>
+            💨 Welcome, feel free to fill up the form below to create a quotation for your clients. 💨
+        </p>
+    </header>
+
+    <form id = "quotationForm">
+
+        <h2>🏢 Quotation Details 🏢</h2>
+
+        <h2>👤 Customer Information</h2>
+        <label for = "clientName">👤 Client Name:</label>
+        <input type = "text" id = "clientName" placeholder = "Enter client name" name = "clientName" required>
+        <br><br>
+
+        <label for = "clientNumber">📞 Client Number:</label>
+        <input type = "text" id = "clientNumber" placeholder = "Enter client number" name = "clientNumber" required>
+        <br><br>
+
+        <label for = "clientAddress">📍 Client Address:</label>
+        <input type = "text" id = "clientAddress" placeholder = "Enter client Address" name = "clientAddress" required>
+        <br><br>
+
+        <h2>📋 Rental Details</h2>
+        <label for = "⏰ Ingress">📍 Ingress Time::</label>
+        <input type="time" id="time_in">
+        <br><br>
+
+        <label for = "⏰ Egress">📍 Egress Time::</label>
+        <input type="time" id="time_out">
+        <br><br>
+
+        <label for = "quantity">📦 Quantity:</label>
+        <input type = "number" id = "quantity" placeholder = "Enter quantity" name = "quantity" required>
+        <br><br>
+
+        <label for = "extensionCord">🔌 Extension Cord:</label>
+        <input type = "number" id = "extensionCord" placeholder = "Enter amount of extension cords" name = "extensionCord">
+        <br><br>
+
+        <label for = "delivery">🚚 Delivery Fee:</label>
+        <input type="number" id="delivery" placeholder="Delivery Fee" required>
+        <br><br>
+
+        <label>
+            <input
+                type="checkbox"
+                id="vat">
+            🧾If Official Receipt is Required (Add 8% VAT)🧾
+        </label>
+
+        <button type="button" onclick="generatePDF()">💾 Save &Generate Quotation PDF 💾</button>
+
+
+    </form>
+
+    <h2>💰 Cost Breakdown</h2>
+</body>
+</html>
