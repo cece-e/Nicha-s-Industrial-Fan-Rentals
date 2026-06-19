@@ -76,32 +76,17 @@ window.showPreview = function () {
     const STANDBY_PRICE = 1000;
 
     // COMPUTATIONS
-    const rental =
-        quantity * days * FAN_PRICE;
+    const rental = quantity * days * FAN_PRICE;
 
-    const cordTotal =
-        hasCord
-            ? cordQty * CORD_PRICE
-            : 0;
+    const cordTotal = hasCord ? cordQty * CORD_PRICE  : 0;
 
-    const standbyTotal =
-        hasStandby
-            ? days * STANDBY_PRICE
-            : 0;
+    const standbyTotal = hasStandby ? days * STANDBY_PRICE : 0;
 
-    const subtotal =
-        rental +
-        delivery +
-        cordTotal +
-        standbyTotal -
-        discount;
+    const subtotal = rental + delivery + cordTotal + standbyTotal - discount;
 
-    const vat =
-        vatChecked
-            ? subtotal * 0.08 : 0;
+    const vat = vatChecked ? subtotal * 0.08 : 0;
 
-    const total =
-        subtotal + vat;
+    const total = subtotal + vat;
 
     currentData = {
         customer,
@@ -125,128 +110,211 @@ window.showPreview = function () {
     // SHOW PREVIEW
     document.getElementById("preview").style.display = "block";
 
-    document.getElementById("p_customer").innerText =
-        `👤 Customer: ${customer}`;
+    document.getElementById("p_customer").innerText = `👤 Customer: ${customer}`;
 
-    document.getElementById("p_contact").innerText =
-        `📞 Contact: ${contact}`;
+    document.getElementById("p_contact").innerText = `📞 Contact: ${contact}`;
 
-    document.getElementById("p_address").innerText =
-        `📍 Address: ${address}`;
+    document.getElementById("p_address").innerText =  `📍 Address: ${address}`;
 
-    document.getElementById("p_dates").innerText =
-        `📅 Rental Period:
-            ${startDateValue} to ${endDateValue}`;
+    document.getElementById("p_dates").innerText = `📅 Rental Period: ${startDateValue} to ${endDateValue}`;
 
-    document.getElementById("p_days").innerText =
-        `📆 Billable Days: ${days}`;
+    document.getElementById("p_days").innerText = `📆 Billable Days: ${days}`;
 
-    document.getElementById("p_fans").innerText =
-        `🌀 Fans: ${quantity}`;
+    document.getElementById("p_fans").innerText = `🌀 Fans: ${quantity}`;
 
-    document.getElementById("p_rental").innerText =
-        `💵 Rental Cost: ₱${rental.toLocaleString()}`;
+    document.getElementById("p_rental").innerText = `💵 Rental Cost: ₱${rental.toLocaleString()}`;
 
-    document.getElementById("p_delivery").innerText =
-        `🚚 Delivery Fee: ₱${delivery.toLocaleString()}`;
+    document.getElementById("p_delivery").innerText = `🚚 Delivery Fee: ₱${delivery.toLocaleString()}`;
 
-    document.getElementById("p_cord").innerText =
-        `🔌 Extension Cords: ₱${cordTotal.toLocaleString()}`;
+    document.getElementById("p_cord").innerText = `🔌 Extension Cords: ₱${cordTotal.toLocaleString()}`;
 
-    document.getElementById("p_standby").innerText =
-        `👷 Standby Personnel: ₱${standbyTotal.toLocaleString()}`;
+    document.getElementById("p_standby").innerText = `👷 Standby Personnel: ₱${standbyTotal.toLocaleString()}`;
 
-    document.getElementById("p_discount").innerText =
-        `💸 Discount: ₱${discount.toLocaleString()}`;
+    document.getElementById("p_discount").innerText = `💸 Discount: ₱${discount.toLocaleString()}`;
 
-    document.getElementById("p_subtotal").innerText =
-        `➕ Subtotal: ₱${subtotal.toLocaleString()}`;
+    document.getElementById("p_subtotal").innerText = `➕ Subtotal: ₱${subtotal.toLocaleString()}`;
 
-    document.getElementById("p_vat").innerText =
-        `🧾 VAT: ₱${vat.toFixed(2)}`;
+    document.getElementById("p_vat").innerText = `🧾 VAT: ₱${vat.toFixed(2)}`;
 
-    document.getElementById("p_total").innerText =
-        `💰 TOTAL: ₱${total.toFixed(2)}`;
+    document.getElementById("p_total").innerText = `💰 TOTAL: ₱${total.toFixed(2)}`;
 };
 
-// =========================
-// HIDE PREVIEW
-// =========================
-
 window.hidePreview = function () {
-    document.getElementById("preview").style.display = "none";
+    const preview = document.getElementById("preview");
+
+    if (preview) {
+        preview.style.display = "none";
+    }
 };
 
 console.log("Generating PDF...");
 console.log(document.getElementById("preview"));
 console.log(typeof html2pdf);
 
-window.testPDF = function () {
-
-    const div = document.createElement("div");
-
-    div.innerHTML = `
-        <h1>Hello PDF</h1>
-        <p>This is a test.</p>
-    `;
-
-    html2pdf()
-        .from(div)
-        .save("test.pdf");
-};
-
 // SAVE + PDF
 document
 .getElementById("confirmBtn")
 .addEventListener("click", async () => {
-
     console.log("Saving quotation...");
 
-    // SAVE TO SUPABASE
-    const { data, error } = await supabase
-        .from("quotations")
-        .insert([{
-            customer_name: currentData.customer,
-            contact_number: currentData.contact,
-            address: currentData.address,
-
-            start_date: currentData.startDate,
-            end_date: currentData.endDate,
-
-            fan_quantity: currentData.quantity,
-            rental_days: currentData.days,
-
-            delivery_fee: currentData.delivery,
-
-            cord_total: currentData.cordTotal,
-
-            standby_total: currentData.standbyTotal,
-
-            discount: currentData.discount,
-
-            vat: currentData.vat,
-
-            total_amount: currentData.total
-        }])
-        .select();
-
-    if (error) {
-        console.error("Supabase Error:", error);
-
-        alert("❌ Could not save to database.\n\n" + error.message);
-        return;
-    }
-
-    console.log("Saved:", data);
-
-    // GENERATE PDF
     try {
+
+        const { data, error } = await supabase
+            .from("quotations")
+            .insert([{
+                customer_name: currentData.customer,
+                contact_number: currentData.contact,
+                address: currentData.address,
+
+                start_date: currentData.startDate,
+                end_date: currentData.endDate,
+
+                fan_quantity: currentData.quantity,
+                rental_days: currentData.days,
+
+                delivery_fee: currentData.delivery,
+
+                cord_total: currentData.cordTotal,
+
+                standby_total: currentData.standbyTotal,
+
+                discount: currentData.discount,
+
+                vat: currentData.vat,
+
+                total_amount: currentData.total
+            }])
+            .select();
+
+        if (error) {
+            console.error("Supabase Error:", error);
+
+            alert(
+                `Message: ${error.message}\n` +
+                `Details: ${error.details}\n` +
+                `Hint: ${error.hint}\n` +
+                `Code: ${error.code}`
+            );
+
+            return;
+        }
+
+        console.log("Saved:", data);
+
+        const quotation = document.createElement("div");
+        quotation.style.width = "800px";
+        quotation.style.padding = "20px";
+        quotation.style.backgroundColor = "white";
+        quotation.style.fontFamily = "Arial, sans-serif";
+
+        quotation.innerHTML = `
+            <h2 style="text-align:center;">
+                NICHA'S INDUSTRIAL FAN RENTALS
+            </h2>
+
+            <p>
+                3508 VIGAN STREET, BRGY. 579, STA. MESA, MANILA, 1008<br>
+                09565322670
+            </p>
+
+            <hr>
+
+            <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+
+            <p><strong>Name:</strong> ${currentData.customer}</p>
+
+            <p><strong>Contact:</strong> ${currentData.contact}</p>
+
+            <p><strong>Location:</strong> ${currentData.address}</p>
+
+            <p><strong>Ingress:</strong> ${currentData.startDate}</p>
+
+            <p><strong>Egress:</strong> ${currentData.endDate}</p>
+
+            <hr>
+
+            <h3>Financial Proposal</h3>
+
+            <table border="1" width="100%" style="border-collapse:collapse;">
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+
+                <tr>
+                    <td>Industrial Fan Rental</td>
+                    <td>₱${currentData.rental.toLocaleString()}</td>
+                </tr>
+
+                <tr>
+                    <td>Delivery Fee</td>
+                    <td>₱${currentData.delivery.toLocaleString()}</td>
+                </tr>
+
+                <tr>
+                    <td>Extension Cord</td>
+                    <td>₱${currentData.cordTotal.toLocaleString()}</td>
+                </tr>
+
+                <tr>
+                    <td>Standby Personnel</td>
+                    <td>₱${currentData.standbyTotal.toLocaleString()}</td>
+                </tr>
+
+                <tr>
+                    <td>Discount</td>
+                    <td>- ₱${currentData.discount.toLocaleString()}</td>
+                </tr>
+
+                <tr>
+                    <td>VAT</td>
+                    <td>₱${currentData.vat.toFixed(2)}</td>
+                </tr>
+            </table>
+
+            <h2>
+                GRAND TOTAL:
+                ₱${currentData.total.toFixed(2)}
+            </h2>
+
+            <br><br>
+
+            <p>
+                CONFORME:
+                ______________________________
+            </p>
+
+            <p>
+                DATE:
+                ______________________________
+            </p>
+        `;
+
+        document.body.appendChild(quotation);
         await html2pdf()
-            .from(document.getElementById("preview"))
-            .save(`Quotation-${currentData.customer}.pdf`);
+            .set({
+                margin: 10,
+                filename: `Quotation-${currentData.customer}.pdf`,
+                html2canvas: {
+                    scale: 2
+                },
+                jsPDF: {
+                    unit: "mm",
+                    format: "a4",
+                    orientation: "portrait"
+                }
+            })
+            .from(quotation)
+            .save();
+
+
         alert("✅ Quotation saved and PDF generated!");
-    }catch(pdfError) {
-        console.error(pdfError);
-        alert("Quotation saved but PDF generation failed.");
+
+    } catch (err) {
+
+        console.error("FULL ERROR:", err);
+
+        alert("❌ Error occurred. Check console (F12).");
     }
+
 });
