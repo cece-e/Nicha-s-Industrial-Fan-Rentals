@@ -4,98 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nicha's Industrial Fan Rentals</title>
+
     <link rel="stylesheet" href="style.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <li
 </head>
 <body>
-    <header>
-        <h1>
-            🌀 Nicha's Industrial Fan Rentals 🌀
-        </h1>
 
-        <p>
-            💨 Welcome, feel free to fill up the form below to create a quotation for your clients. 💨
-        </p>
-    </header>
+<header>
+    <h1>🌀 Nicha's Industrial Fan Rentals 🌀</h1>
 
-    <form id = "quotationForm">
+    <p>
+        💨 Welcome, feel free to fill up the form below to create a quotation for your clients. 💨
+    </p>
+</header>
 
-        <h2>🏢 Quotation Details 🏢</h2>
+<form id="quotationForm">
 
-        <h2>👤 Customer Information</h2>
-        <label for = "clientName">👤 Client Name:</label>
-        <input type = "text" id = "clientName" placeholder = "Enter client name" name = "clientName" required>
-        <br><br>
+    <h2>👤 Customer Information</h2>
 
-        <label for = "clientNumber">📞 Client Number:</label>
-        <input type = "text" id = "clientNumber" placeholder = "Enter client number" name = "clientNumber" required>
-        <br><br>
+    <input type="text" id="clientName" placeholder="Client Name" required>
+    <br><br>
 
-        <label for = "clientAddress">📍 Client Address:</label>
-        <input type = "text" id = "clientAddress" placeholder = "Enter client Address" name = "clientAddress" required>
-        <br><br>
+    <input type="text" id="clientNumber" placeholder="Client Number" required>
+    <br><br>
 
-        <h2>📋 Rental Details</h2>
-        <label for = "Ingress">⏰ Ingress Time::</label>
-        <input type="time" id="time_in">
-        <br><br>
+    <input type="text" id="clientAddress" placeholder="Client Address" required>
+    <br><br>
 
-        <label for = "Egress">⏰ Egress Time::</label>
-        <input type="time" id="time_out">
-        <br><br>
+    <h2>📋 Rental Details</h2>
 
-        <label for = "quantity">📦 Quantity:</label>
-        <input type = "number" id = "quantity" placeholder = "Enter quantity" name = "quantity" required>
-        <br><br>
+    <label>📅 Ingress Date & Time:</label>
+    <input type="datetime-local" id="startDate">
+    <br><br>
 
-        <label>
-            <input type="checkbox" id="hasCord"> 🔌 Include Extension Cord (₱150 each)
-        </label>
-        <input type="number" id="cordQty" placeholder="Number of Cords" value="0" min="0">
-        <br><br>
+    <label>📅 Egress Date & Time:</label>
+    <input type="datetime-local" id="endDate">
+    <br><br>
 
-        <label for = "delivery">🚚 Delivery Fee:</label>
-        <input type="number" id="delivery" placeholder="Delivery Fee" required>
-        <br><br>
+    <label>📦 Quantity</label>
+    <input type="number" id="quantity" min="1" required>
+    <br><br>
 
-        <label>
-            <input
-                type="checkbox"
-                id="vat">
-            🧾If Official Receipt is Required (Add 8% VAT)🧾
-        </label>
-        <br><br> 
+    <label>🚚 Delivery Fee</label>
+    <input type="number" id="delivery" value="0">
+    <br><br>
 
-        <button type="button" onclick="showPreview()"> 🔍 Preview Quotation 🔍</button><br>
-        <button type="button" onclick="generatePDF()">💾 Save &Generate Quotation PDF 💾</button>
+    <label>📅 Number of Days:</label>
+    <input type="number" id="days" value="1" min="1">
+    <br><br>
 
-    </form>
+    <label>
+        <input type="checkbox" id="hasStandby">
+        👷 Include Standby Personnel (₱1000/day)
+    </label>
+    <br><br>
 
-    <div class="preview">
-        <script src="script.js"></script>
-        
-        <h2>👤 Customer Details 👤</h2>
-        <p id="p_customer"></p>
-        <p id="p_contact"></p>
-        <p id="p_address"></p>
+    <label>💸 Discount:</label>
+    <input type="number" id="discount" value="0" min="0">
+    <br><br>
 
-        <hr>
-        <h2>💰 Cost Breakdown 💰</h2>
-        <p id="p_fans"></p>
-        <p id="p_price"></p>
-        <p id="p_rental"></p>
-        <p id="p_delivery"></p>
-        <p id="p_cord"></p>
-        <p id="p_subtotal"></p>
-        <p id="p_vat"></p>
+    <label>
+        <input type="checkbox" id="hasCord">
+        🔌 Extension Cord (₱150 each)
+    </label>
 
-        <h3 id="p_total"></h3>
+    <input type="number" id="cordQty" value="0" min="0">
+    <br><br>
 
-        <button id="confirmBtn">✅ Confirm & Save + Generate PDF</button>
-        <button onclick="hidePreview()">✏️ Edit</button>
+    <label>
+        <input type="checkbox" id="vat">
+        🧾 Add 8% VAT
+    </label>
+    <br><br>
 
+    <button type="button" onclick="showPreview()">
+        🔍 Preview Quotation
+    </button>
 
-    </div>
+</form>
+
+<hr>
+
+<div id="preview" style="display:none;">
+
+    <h2>📋 Quotation Preview</h2>
+
+    <p id="p_customer"></p>
+    <p id="p_contact"></p>
+    <p id="p_address"></p>
+
+    <hr>
+
+    <p id="p_fans"></p>
+    <p id="p_rental"></p>
+    <p id="p_delivery"></p>
+    <p id="p_cord"></p>
+    <p id="p_subtotal"></p>
+    <p id="p_vat"></p>
+
+    <p id="p_dates"></p>
+    <p id="p_days"></p>
+
+    <p id="p_standby"></p>
+    <p id="p_discount"></p>
+
+    <h3 id="p_total"></h3>
+
+    <button type="button" id="confirmBtn">
+    ✅ Confirm & Save
+    </button>
+
+    <button type="button" onclick="hidePreview()">
+        ✏️ Edit
+    </button>
+
+    <button onclick="testPDF()">Test PDF</button>
+
+</div>
+
+<script type="module" src="script.js"></script>
+
 </body>
 </html>

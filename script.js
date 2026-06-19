@@ -1,98 +1,252 @@
 import { createClient }
-from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-        const supabase = createClient(
-            "https://vrwpukkqeyjnqfhmdxki.supabase.co",
-            "sb_publishable_jQeJy6INmyOse--1jhzbGQ_rk95dfrq"
-        );
+const supabase = createClient(
+    "https://vrwpukkqeyjnqfhmdxki.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyd3B1a2txZXlqbnFmaG1keGtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0ODUwNzEsImV4cCI6MjA5NzA2MTA3MX0.7Cobjo_7FmK85BttATR0YGSVnEET87j-l81LJlBJMkU"
+);
 
-        let currentData = {};
+let currentData = {};
 
-        // SHOW PREVIEW
-        window.showPreview = function () {
+window.showPreview = function () {
+    // CUSTOMER INFO
+    const customer =
+        document.getElementById("clientName").value;
 
-            const customer = document.getElementById("customer").value;
-            const contact = document.getElementById("contact").value;
-            const address = document.getElementById("address").value;
+    const contact =
+        document.getElementById("clientNumber").value;
 
-            const fans = Number(document.getElementById("fans").value);
-            const price = Number(document.getElementById("price").value);
-            const delivery = Number(document.getElementById("delivery").value);
+    const address =
+        document.getElementById("clientAddress").value;
 
-            const vatChecked = document.getElementById("vat").checked;
+    // RENTAL PERIOD
+    const startDateValue =
+        document.getElementById("startDate").value;
 
-            const hasCord = document.getElementById("hasCord").checked;
-            const cordQty = Number(document.getElementById("cordQty").value);
-            const cordPrice = 150;
+    const endDateValue =
+        document.getElementById("endDate").value;
 
-            const rental = fans * price;
-            const cordTotal = hasCord ? cordQty * cordPrice : 0;
+    const startDate =
+        new Date(startDateValue);
 
-            const subtotal = rental + delivery + cordTotal;
+    const endDate =
+        new Date(endDateValue);
 
-            let vat = 0;
-            if (vatChecked) {
-                vat = subtotal * 0.08;
-            }
+    // HOURS
+    const milliseconds =
+        endDate - startDate;
 
-            const total = subtotal + vat;
+    const hours =
+        milliseconds / (1000 * 60 * 60);
 
-            currentData = {
-                customer,
-                contact,
-                address,
-                fans,
-                price,
-                delivery,
-                cordTotal,
-                vat,
-                total
-            };
+    // Every started 24-hour period = 1 day
+    const days =
+        Math.max(1, Math.ceil(hours / 24));
 
-            // SHOW PREVIEW BOX
-            document.getElementById("preview").style.display = "block";
+    // QUANTITY
+    const quantity =
+        Number(document.getElementById("quantity").value);
 
-            document.getElementById("p_customer").innerText = `👤 Customer: ${customer}`;
-            document.getElementById("p_contact").innerText = `📞 Contact: ${contact}`;
-            document.getElementById("p_address").innerText = `📍 Address: ${address}`;
+    // DELIVERY
+    const delivery =
+        Number(document.getElementById("delivery").value || 0);
 
-            document.getElementById("p_fans").innerText = `🌀 Fans: ${fans}`;
-            document.getElementById("p_price").innerText = `💰 Price: ₱${price}`;
-            document.getElementById("p_rental").innerText = `💵 Rental: ₱${rental}`;
-            document.getElementById("p_delivery").innerText = `🚚 Delivery: ₱${delivery}`;
-            document.getElementById("p_cord").innerText = `🔌 Extension Cords: ₱${cordTotal}`;
-            document.getElementById("p_subtotal").innerText = `➕ Subtotal: ₱${subtotal}`;
-            document.getElementById("p_vat").innerText = `🧾 VAT: ₱${vat}`;
+    // DISCOUNT
+    const discount =
+        Number(document.getElementById("discount").value || 0);
 
-            document.getElementById("p_total").innerText = `💸 TOTAL: ₱${total}`;
-        }
+    // VAT
+    const vatChecked =
+        document.getElementById("vat").checked;
 
-        // HIDE PREVIEW
-        window.hidePreview = function () {
-            document.getElementById("preview").style.display = "none";
-        }
+    // EXTENSION CORDS
+    const hasCord =
+        document.getElementById("hasCord").checked;
 
-        // SAVE + PDF
-        document.getElementById("confirmBtn").addEventListener("click", async () => {
+    const cordQty =
+        Number(document.getElementById("cordQty").value || 0);
 
-            const { error } = await supabase
-                .from("quotations")
-                .insert([{
-                    customer_name: currentData.customer,
-                    contact_number: currentData.contact,
-                    fan_quantity: currentData.fans,
-                    total_amount: currentData.total
-                }]);
+    // STANDBY PERSONNEL
+    const hasStandby =
+        document.getElementById("hasStandby").checked;
 
-            if (error) {
-                alert("Error saving quotation");
-                console.log(error);
-                return;
-            }
+    // PRICES
+    const FAN_PRICE = 1100;
+    const CORD_PRICE = 150;
+    const STANDBY_PRICE = 1000;
 
-            alert("Saved successfully!");
+    // COMPUTATIONS
+    const rental =
+        quantity * days * FAN_PRICE;
 
-            html2pdf()
-                .from(document.getElementById("preview"))
-                .save(`Quotation-${currentData.customer}.pdf`);
-        });
+    const cordTotal =
+        hasCord
+            ? cordQty * CORD_PRICE
+            : 0;
+
+    const standbyTotal =
+        hasStandby
+            ? days * STANDBY_PRICE
+            : 0;
+
+    const subtotal =
+        rental +
+        delivery +
+        cordTotal +
+        standbyTotal -
+        discount;
+
+    const vat =
+        vatChecked
+            ? subtotal * 0.08 : 0;
+
+    const total =
+        subtotal + vat;
+
+    currentData = {
+        customer,
+        contact,
+        address,
+        startDate: startDateValue,
+        endDate: endDateValue,
+        quantity,
+        days,
+        delivery,
+        discount,
+        cordQty,
+        cordTotal,
+        standbyTotal,
+        rental,
+        subtotal,
+        vat,
+        total
+    };
+
+    // SHOW PREVIEW
+    document.getElementById("preview").style.display = "block";
+
+    document.getElementById("p_customer").innerText =
+        `👤 Customer: ${customer}`;
+
+    document.getElementById("p_contact").innerText =
+        `📞 Contact: ${contact}`;
+
+    document.getElementById("p_address").innerText =
+        `📍 Address: ${address}`;
+
+    document.getElementById("p_dates").innerText =
+        `📅 Rental Period:
+            ${startDateValue} to ${endDateValue}`;
+
+    document.getElementById("p_days").innerText =
+        `📆 Billable Days: ${days}`;
+
+    document.getElementById("p_fans").innerText =
+        `🌀 Fans: ${quantity}`;
+
+    document.getElementById("p_rental").innerText =
+        `💵 Rental Cost: ₱${rental.toLocaleString()}`;
+
+    document.getElementById("p_delivery").innerText =
+        `🚚 Delivery Fee: ₱${delivery.toLocaleString()}`;
+
+    document.getElementById("p_cord").innerText =
+        `🔌 Extension Cords: ₱${cordTotal.toLocaleString()}`;
+
+    document.getElementById("p_standby").innerText =
+        `👷 Standby Personnel: ₱${standbyTotal.toLocaleString()}`;
+
+    document.getElementById("p_discount").innerText =
+        `💸 Discount: ₱${discount.toLocaleString()}`;
+
+    document.getElementById("p_subtotal").innerText =
+        `➕ Subtotal: ₱${subtotal.toLocaleString()}`;
+
+    document.getElementById("p_vat").innerText =
+        `🧾 VAT: ₱${vat.toFixed(2)}`;
+
+    document.getElementById("p_total").innerText =
+        `💰 TOTAL: ₱${total.toFixed(2)}`;
+};
+
+// =========================
+// HIDE PREVIEW
+// =========================
+
+window.hidePreview = function () {
+    document.getElementById("preview").style.display = "none";
+};
+
+console.log("Generating PDF...");
+console.log(document.getElementById("preview"));
+console.log(typeof html2pdf);
+
+window.testPDF = function () {
+
+    const div = document.createElement("div");
+
+    div.innerHTML = `
+        <h1>Hello PDF</h1>
+        <p>This is a test.</p>
+    `;
+
+    html2pdf()
+        .from(div)
+        .save("test.pdf");
+};
+
+// SAVE + PDF
+document
+.getElementById("confirmBtn")
+.addEventListener("click", async () => {
+
+    console.log("Saving quotation...");
+
+    // SAVE TO SUPABASE
+    const { data, error } = await supabase
+        .from("quotations")
+        .insert([{
+            customer_name: currentData.customer,
+            contact_number: currentData.contact,
+            address: currentData.address,
+
+            start_date: currentData.startDate,
+            end_date: currentData.endDate,
+
+            fan_quantity: currentData.quantity,
+            rental_days: currentData.days,
+
+            delivery_fee: currentData.delivery,
+
+            cord_total: currentData.cordTotal,
+
+            standby_total: currentData.standbyTotal,
+
+            discount: currentData.discount,
+
+            vat: currentData.vat,
+
+            total_amount: currentData.total
+        }])
+        .select();
+
+    if (error) {
+        console.error("Supabase Error:", error);
+
+        alert("❌ Could not save to database.\n\n" + error.message);
+        return;
+    }
+
+    console.log("Saved:", data);
+
+    // GENERATE PDF
+    try {
+        await html2pdf()
+            .from(document.getElementById("preview"))
+            .save(`Quotation-${currentData.customer}.pdf`);
+        alert("✅ Quotation saved and PDF generated!");
+    }catch(pdfError) {
+        console.error(pdfError);
+        alert("Quotation saved but PDF generation failed.");
+    }
+});
