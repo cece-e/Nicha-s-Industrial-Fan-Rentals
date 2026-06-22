@@ -179,4 +179,12 @@ input[type="datetime-local"] {
     transition: 0.2s ease;
 }
 
+#pdfTemplate {
+    width: 800px;
+    background: white;
+    padding: 20px;
 
+    position: fixed;
+    top: 0;
+    left: -10000px;
+}
