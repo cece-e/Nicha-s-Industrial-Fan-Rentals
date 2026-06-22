@@ -151,170 +151,140 @@ console.log("Generating PDF...");
 console.log(document.getElementById("preview"));
 console.log(typeof html2pdf);
 
+
 // SAVE + PDF
-document
-.getElementById("confirmBtn")
-.addEventListener("click", async () => {
-    console.log("Saving quotation...");
+window.addEventListener("DOMContentLoaded", () => {
 
-    try {
+    const confirmBtn =
+        document.getElementById("confirmBtn");
 
-        const { data, error } = await supabase
+    console.log(confirmBtn);
+
+    confirmBtn.addEventListener("click", async () => {
+
+        const { error } = await supabase
             .from("quotations")
             .insert([{
                 customer_name: currentData.customer,
                 contact_number: currentData.contact,
                 address: currentData.address,
-
                 start_date: currentData.startDate,
                 end_date: currentData.endDate,
-
                 fan_quantity: currentData.quantity,
                 rental_days: currentData.days,
-
                 delivery_fee: currentData.delivery,
-
                 cord_total: currentData.cordTotal,
-
                 standby_total: currentData.standbyTotal,
-
                 discount: currentData.discount,
-
                 vat: currentData.vat,
-
                 total_amount: currentData.total
-            }])
-            .select();
+            }]);
 
         if (error) {
-            console.error("Supabase Error:", error);
-
-            alert(
-                `Message: ${error.message}\n` +
-                `Details: ${error.details}\n` +
-                `Hint: ${error.hint}\n` +
-                `Code: ${error.code}`
-            );
-
+            alert(error.message);
             return;
         }
 
-        console.log("Saved:", data);
-
-        const quotation = document.createElement("div");
-        quotation.style.width = "800px";
-        quotation.style.padding = "20px";
-        quotation.style.backgroundColor = "white";
-        quotation.style.fontFamily = "Arial, sans-serif";
-
-        quotation.innerHTML = `
-            <h2 style="text-align:center;">
-                NICHA'S INDUSTRIAL FAN RENTALS
-            </h2>
-
-            <p>
-                3508 VIGAN STREET, BRGY. 579, STA. MESA, MANILA, 1008<br>
-                09565322670
-            </p>
-
-            <hr>
-
-            <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-
-            <p><strong>Name:</strong> ${currentData.customer}</p>
-
-            <p><strong>Contact:</strong> ${currentData.contact}</p>
-
-            <p><strong>Location:</strong> ${currentData.address}</p>
-
-            <p><strong>Ingress:</strong> ${currentData.startDate}</p>
-
-            <p><strong>Egress:</strong> ${currentData.endDate}</p>
-
-            <hr>
-
-            <h3>Financial Proposal</h3>
-
-            <table border="1" width="100%" style="border-collapse:collapse;">
-                <tr>
-                    <th>Description</th>
-                    <th>Amount</th>
-                </tr>
-
-                <tr>
-                    <td>Industrial Fan Rental</td>
-                    <td>₱${currentData.rental.toLocaleString()}</td>
-                </tr>
-
-                <tr>
-                    <td>Delivery Fee</td>
-                    <td>₱${currentData.delivery.toLocaleString()}</td>
-                </tr>
-
-                <tr>
-                    <td>Extension Cord</td>
-                    <td>₱${currentData.cordTotal.toLocaleString()}</td>
-                </tr>
-
-                <tr>
-                    <td>Standby Personnel</td>
-                    <td>₱${currentData.standbyTotal.toLocaleString()}</td>
-                </tr>
-
-                <tr>
-                    <td>Discount</td>
-                    <td>- ₱${currentData.discount.toLocaleString()}</td>
-                </tr>
-
-                <tr>
-                    <td>VAT</td>
-                    <td>₱${currentData.vat.toFixed(2)}</td>
-                </tr>
-            </table>
-
-            <h2>
-                GRAND TOTAL:
-                ₱${currentData.total.toFixed(2)}
-            </h2>
-
-            <br><br>
-
-            <p>
-                CONFORME:
-                ______________________________
-            </p>
-
-            <p>
-                DATE:
-                ______________________________
-            </p>
-        `;
-
-        document.body.appendChild(quotation);
-        await html2pdf()
-            .set({
-                margin: 10,
-                filename: `Quotation-${currentData.customer}.pdf`,
-                html2canvas: {
-                    scale: 2
-                },
-                jsPDF: {
-                    unit: "mm",
-                    format: "a4",
-                    orientation: "portrait"
-                }
-            })
-            .from(quotation)
-            .save();
-
-
-        alert("✅ Quotation saved and PDF generated!");
-
-    } catch (err) {
-
-        console.error("FULL ERROR:", err);
-
-        alert("❌ Error occurred. Check console (F12).");
-    }
+        await generatePDF();
+    });
 
 });
+
+async function generatePDF() {
+
+    document.getElementById("pdfDate").innerText =
+        new Date().toLocaleDateString();
+
+    document.getElementById("pdfCustomer").innerText =
+        currentData.customer;
+
+    document.getElementById("pdfContact").innerText =
+        currentData.contact;
+
+    document.getElementById("pdfAddress").innerText =
+        currentData.address;
+
+    document.getElementById("pdfIngress").innerText =
+        currentData.startDate;
+
+    document.getElementById("pdfEgress").innerText =
+        currentData.endDate;
+
+    document.getElementById("pdfQty").innerText =
+        currentData.quantity;
+
+    document.getElementById("pdfDays").innerText =
+        currentData.days;
+
+    document.getElementById("pdfRental").innerText =
+        `₱${currentData.rental.toLocaleString()}`;
+
+    document.getElementById("pdfDelivery").innerText =
+        `₱${currentData.delivery.toLocaleString()}`;
+
+    document.getElementById("pdfCordTotal").innerText =
+        `₱${currentData.cordTotal.toLocaleString()}`;
+
+    document.getElementById("pdfStandby").innerText =
+        `₱${currentData.standbyTotal.toLocaleString()}`;
+
+    document.getElementById("pdfDiscount").innerText =
+        `₱${currentData.discount.toLocaleString()}`;
+
+        const pdfDiscount =
+        document.getElementById("pdfDiscount");
+
+        if(pdfDiscount){
+            pdfDiscount.innerText =
+                `₱${currentData.discount.toLocaleString()}`;
+        }
+
+    document.getElementById("pdfVat").innerText =
+        `₱${currentData.vat.toFixed(2)}`;
+
+        const pdfVat =
+        document.getElementById("pdfVat");
+
+        if(pdfVat){
+            pdfVat.innerText =
+                `₱${currentData.vat.toLocaleString()}`;
+        }
+
+    document.getElementById("pdfGrandTotal").innerText =
+        `Grand Total: ₱${currentData.total.toFixed(2)}`;
+
+    document.getElementById("pdfQty2").innerText =
+    currentData.quantity;
+
+    document.getElementById("pdfDelivery2").innerText =
+        `₱${currentData.delivery.toLocaleString()}`;
+
+    document.getElementById("pdfCordQty").innerText =
+        currentData.cordQty;
+
+    const pdf =
+        document.getElementById("pdfTemplate");
+
+    pdf.style.display = "block";
+
+    await html2pdf()
+        .set({
+            margin: 10,
+            filename:
+                `Quotation-${currentData.customer}.pdf`,
+            html2canvas: {
+                scale: 2
+            },
+            jsPDF: {
+                unit: "mm",
+                format: "a4",
+                orientation: "portrait"
+            }
+        })
+        .from(pdf)
+        .save();
+
+    pdf.style.display = "none";
+
+    alert("✅ Quotation saved and PDF generated!");
+}
