@@ -180,11 +180,8 @@ input[type="datetime-local"] {
 }
 
 #pdfTemplate {
-    width: 800px;
     background: white;
-    padding: 20px;
-
-    position: fixed;
-    top: 0;
-    left: -10000px;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    color: #333;
 }
