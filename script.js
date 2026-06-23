@@ -1,6 +1,6 @@
 const supabaseDb = window.supabase ? window.supabase.createClient(
     "https://vrwpukkqeyjnqfhmdxki.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyd3B1a2txZXlqbnFmaG1keGtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0ODUwNzEsImV4cCI6MjA5NzA2MTA3MX0.7Cobjo_7FmK85BttATR0YGSVnEET87j-l81LJlBJMkU"
+    "Anon Key"
 ) : null;
 
 let currentData = {};
