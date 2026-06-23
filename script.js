@@ -76,14 +76,11 @@ window.hidePreview = function () {
 
 window.addEventListener("DOMContentLoaded", () => {
     
-    // 👇 ADD THE NEW CODE RIGHT HERE AT THE TOP OF THE LISTENER
     const pdfTemplate = document.getElementById("pdfTemplate");
     if (pdfTemplate) {
         pdfTemplate.style.display = "none";
     }
-    // 👆 END OF NEW CODE
 
-    // Dynamically inject Supabase script fallback to avoid type="module" issues
     if(!window.supabase) {
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js';
@@ -176,12 +173,26 @@ window.addEventListener("DOMContentLoaded", () => {
 async function generatePDF() {
 
     const { jsPDF } = window.jspdf;
-
     const doc = new jsPDF();
 
-    // HEADER
+    const logo = new Image();
+    logo.src = "logo.jpg";
+    await new Promise((resolve) => {
+        logo.onload = resolve;
+    });
+
+    // pg 1
+    doc.addImage(
+        logo,
+        "JPEG", 
+        85,     
+        5,      
+        80,     
+        50      
+    );
+
     doc.setFontSize(18);
-    doc.text("NICHA'S INDUSTRIAL FAN RENTALS", 105, 15, {
+    doc.text("NICHA'S INDUSTRIAL FAN RENTALS", 105, 65, {
         align: "center"
     });
 
@@ -190,21 +201,24 @@ async function generatePDF() {
     doc.text(
         "3508 VIGAN STREET, BRGY. 579, STA. MESA, MANILA, 1008",
         105,
-        22,
+        72,
         { align: "center" }
     );
 
     doc.text(
         "09565322670",
         105,
-        28,
+        78,
         { align: "center" }
     );
 
-    // CUSTOMER INFO
-    let y = 40;
+    let y = 90;
 
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 15, y);
+    doc.text(
+        `Date: ${new Date().toLocaleDateString()}`,
+        15,
+        y
+    );
 
     y += 8;
     doc.text(`Name: ${currentData.customer}`, 15, y);
@@ -223,14 +237,33 @@ async function generatePDF() {
 
     y += 15;
 
+    const proposalText = `
+    Nicha's Industrial Fan Rentals is honored to be given the opportunity to meet your requirements. We sincerely 
+    hope that you will find our proposal well-suited to your needs.
+    With our high-quality equipment, technical expertise, and dedicated support team, we are fully committed to 
+    ensuring the success and smooth execution of your event or project.
+    Should you have any questions or require further clarification, please feel free to contact our assigned Account 
+    Manager, who will be more than happy to assist you.
+    Our Financial Proposal, along with the Terms and Conditions, is attached for your review and consideration.
+    Thank you very much for considering Nicha's Industrial Fan Rentals for this undertaking. We look forward to the 
+    opportunity to serve you.
+
+    Very truly yours,
+    Nicha's Industrial Fan Rentals`;
+
+    const proposalLines = doc.splitTextToSize(
+        proposalText,
+        180
+    );
+
+    doc.setFontSize(11);
     doc.text(
-        "Nicha's Industrial Fan Rentals is honored to be given the opportunity to meet your requirements.",
+        proposalLines,
         15,
         y
     );
 
-    y += 15;
-
+    y += proposalLines.length * 6 + 10;
     doc.text("Jennifer O. Quidilla", 15, y);
 
     y += 6;
@@ -239,9 +272,13 @@ async function generatePDF() {
     y += 6;
     doc.text("09953748952", 15, y);
 
-    // TABLE
+    y += 12;
+
+    doc.setFontSize(14);
+    doc.text("FINANCIAL PROPOSAL", 15, y);
+
     doc.autoTable({
-        startY: y + 10,
+        startY: y + 5,
         head: [
             ["Item", "Description", "Qty", "Unit Cost", "Total"]
         ],
@@ -286,6 +323,8 @@ async function generatePDF() {
 
     y = doc.lastAutoTable.finalY + 10;
 
+    doc.setFontSize(11);
+
     doc.text(
         `Discount: Php ${currentData.discount.toLocaleString()}`,
         15,
@@ -310,41 +349,103 @@ async function generatePDF() {
         y
     );
 
-    // PAGE 2
+    y += 15;
+
+    doc.setFontSize(11);
+
+    doc.text(
+        "ANY LOSS OR DAMAGE TO THE DELIVERED ITEM/S WILL BE CHARGED ACCORDINGLY:",
+        15,
+        y
+    );
+
+    y += 8;
+
+    doc.text(
+        "Industrial Fan = Php 8,000 each",
+        15,
+        y
+    );
+
+    y += 6;
+
+    doc.text(
+        "Extension Cord = Php 400 each",
+        15,
+        y
+    );
+
+    // Pg 2
     doc.addPage();
 
     doc.setFontSize(16);
     doc.text("TERMS & CONDITIONS", 15, 20);
 
-    doc.setFontSize(11);
+    let termsY = 35;
 
-    doc.text(
-        "Booking confirmation and Payment Terms: 50% upon confirmation...",
-        15,
-        35
-    );
+    const sections = [
+        {
+            title: "Booking Confirmation and Payment Terms",
+            body:
+                "50% upon confirmation (or Php 1,000.00 only if total is under 10,000) plus 1 government I.D and 50% (or the rest of the balance) upon delivery (For Strict Compliance). We only provide an Acknowledgement Receipt for our clients. If the client wants an Official Receipt, there is an additional 8% for VAT."
+        },
+        {
+            title: "Order Cancellation",
+            body:
+                "50% down payment NON-REFUNDABLE."
+        },
+        {
+            title: "Power Requirements",
+            body:
+                "Electrical supply and necessary cables will be provided by the client."
+        },
+        {
+            title: "Delivery",
+            body:
+                "The client should inform the supplier of the event's exact location like room/s, floor/s, indoor or outdoor. If the venue is located on the upper floor."
+        },
+        {
+            title: "Meals (Only if Client Requested a Standby Crew)",
+            body:
+                "Meals for the supplier's personnel will be provided by the client or will add Php150 per pax per meal. The supplier will inform the client of the number of personnel needed to set up the event."
+        },
+        {
+            title: "Return Policy",
+            body:
+                "All items must be returned to Nicha's Industrial Fan Rentals after the event duration. Failure to do so will result in additional payment of rented items per day and forfeiture of the security deposit."
+        }
+    ];
 
-    doc.text(
-        "We only provide an Acknowledgement Receipt for our clients.",
-        15,
-        50
-    );
+    sections.forEach(section => {
 
-    doc.text(
-        "If the client wants an Official Receipt, there is an additional 8% VAT.",
-        15,
-        65
-    );
+        doc.setFontSize(12);
 
-    doc.text("MODE OF PAYMENT", 15, 90);
+        doc.text(
+            section.title + ":",
+            15,
+            termsY
+        );
 
-    doc.text("GCash", 15, 105);
+        termsY += 7;
 
-    doc.text("Jennifer O. Quidilla", 15, 120);
+        doc.setFontSize(11);
 
-    doc.text("09953748952", 15, 130);
+        const wrapped = doc.splitTextToSize(
+            section.body,
+            180
+        );
 
-    // PAGE 3
+        doc.text(
+            wrapped,
+            15,
+            termsY
+        );
+
+        termsY += wrapped.length * 6 + 10;
+    });
+
+    // pg 3
+
     doc.addPage();
 
     doc.setFontSize(16);
@@ -352,23 +453,44 @@ async function generatePDF() {
 
     doc.setFontSize(11);
 
+    const conformeText =
+        "This Proposal constitutes a valid and binding contractual agreement once signed by you. Your signature below indicates acceptance of the quotation, terms, and conditions stated in this document.";
+
+    const conformeLines =
+        doc.splitTextToSize(conformeText, 180);
+
     doc.text(
-        "This Proposal constitutes a valid and binding contractual agreement once signed.",
+        conformeLines,
         15,
         40
     );
 
     doc.text(
-        "CONFORME: __________________________",
+        "CONFORME:",
         15,
-        100
+        120
+    );
+
+    doc.line(
+        50,
+        118,
+        140,
+        118
     );
 
     doc.text(
-        "Authorized Representative (Signature over Printed Name)",
+        "Authorized Representative",
         15,
-        115
+        135
     );
 
-    doc.save(`Quotation-${currentData.customer}.pdf`);
+    doc.text(
+        "(Signature over Printed Name)",
+        15,
+        142
+    );
+
+    doc.save(
+        `Quotation-${currentData.customer}.pdf`
+    );
 }

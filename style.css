@@ -165,7 +165,7 @@ input[type="checkbox"]:checked {
 }
 
 input[type="datetime-local"] {
-    width: 20%;
+    width: 40%;
     padding: 10px 12px;
     font-family: "Fredoka", sans-serif;
     border-radius: 10px;
