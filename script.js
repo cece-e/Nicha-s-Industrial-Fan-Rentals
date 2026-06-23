@@ -193,12 +193,12 @@ async function generatePDF() {
     y += 6;
     doc.text("09953748952", 15, y);
 
-    y += 12;
+    doc.addPage();
     doc.setFontSize(14);
-    doc.text("FINANCIAL PROPOSAL", 15, y);
+    doc.text("FINANCIAL PROPOSAL", 15, 20);
 
     doc.autoTable({
-        startY: y + 5,
+        startY: 20 + 5,
         head: [["Item", "Description", "Qty", "Unit Cost", "Total"]],
         body: [
             ["1", "Industrial Fan", currentData.quantity, "Php 1,100.00", `Php ${currentData.rental.toLocaleString()}`],
